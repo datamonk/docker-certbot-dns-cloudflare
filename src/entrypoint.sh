@@ -203,7 +203,10 @@ else
     # POSIX-compliant way to show next run time
     current_timestamp=$(date +%s)
     next_timestamp=$((current_timestamp + RENEWAL_INTERVAL))
-    next_run=$(date -r "$next_timestamp" '+%Y-%m-%d %H:%M:%S %z' 2>/dev/null || date '+%Y-%m-%d %H:%M:%S %z')
+    # fix from another fork for renewal echo output
+    # @ref: https://github.com/serversideup/docker-certbot-dns-cloudflare/commit/93c3e0b69b4df00f93b6106deb94f7828a82c7de
+    #next_run=$(date -r "$next_timestamp" '+%Y-%m-%d %H:%M:%S %z' 2>/dev/null || date '+%Y-%m-%d %H:%M:%S %z')
+    next_run=$(date -d "@$next_timestamp" '+%Y-%m-%d %H:%M:%S %z' 2>/dev/null || date '+%Y-%m-%d %H:%M:%S %z')
     echo "Next certificate renewal check will be at ${next_run}"
     # Store PID of sleep process and wait for it
     sleep "$RENEWAL_INTERVAL" &
